@@ -52,3 +52,11 @@ plot(fit1)
 plot(predict(fit1, residuals(fit1)
 plot(predict(fit1), rstudent(fit1))
 plot(hatvalues(fit1))
+
+plot(Boston$crim)
+install.packages("psych")
+describe(Boston)
+
+plot(Boston$crim)
+install.packages("psych")
+describe(Boston)
