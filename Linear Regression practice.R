@@ -15,9 +15,16 @@ hist(Boston$rm)
 fit1<-lm(Boston$medv~Boston$lstat, Boston)
 fit1
 summary(fit1)
+plot(Boston$medv~Boston$lstat)
+
+cor(Boston$medv,Boston$lstat)
+cor.test(Boston$medv,Boston$lstat)
+
 attach(Boston)
 fit1$coefficients
 fit1$residuals
+
+plot(medv~lstat)
 
 hist(fit1$residuals)
 fit1$effects
