@@ -100,6 +100,7 @@ plot(predict(fit1, residuals(fit1)
              data[,1]
              class(data)
              as.data.frame(data)
+             data
              subset.data<-if(as.data.frame(data)[,1]>2){
                print(x)
              }
@@ -133,7 +134,7 @@ plot(predict(fit1, residuals(fit1)
              }
              
              
-             #####Week 2 quiz
+             #####Week 2 quiz Coursera R programming
              cube<-function(x,n){
                x^3
              }
@@ -197,20 +198,100 @@ dt<-dir("~/Downloads/specdata", full.names = T) %>% map_df(read.csv)
 
 head(dt)
 
-Part 1
-Write a function named 'pollutantmean' that calculates the mean of 
-a pollutant (sulfate or nitrate) across a specified list of monitors. 
-The function 'pollutantmean' takes three arguments: 'directory', 'pollutant',
-and 'id'. Given a vector monitor ID numbers, 'pollutantmean' reads 
-that monitors' particulate matter data from the directory specified 
-in the 'directory' argument and returns the mean of the pollutant 
-across all of the monitors, ignoring any missing values coded as NA.
-A prototype of the function is as follows
+#####Pollutant mean 1st function
+pollutantmean <- function(directory, pollutant, id=1:332) {
+  filelist <- list.files(path =directory, pattern = ".csv", full.names = TRUE)
+  values <- numeric()
+  
+  for (i in id) {
+    dt <- read.csv(filelist[i])
+    values <- c(values, dt[[pollutant]])
+  }
+  mean(values, na.rm = TRUE)
+}
+#####Test the 1st function
+pollutantmean("~/Downloads/specdata", "sulfate", id=1:10)
+pollutantmean("~/Downloads/specdata", "sulfate", id=1:110)
+pollutantmean("~/Downloads/specdata", "sulfate", id=100:200)
+pollutantmean("~/Downloads/specdata", "nitrate", id=100:200)
 
-pollutantmean<-function(directory, pollutant, id=1=332){
-directory<-"~/Downloads/specdata"
+
+pollutantmean("~/Downloads/specdata", "sulfate", id=1:10)
+pollutantmean("~/Downloads/specdata", "nitrate", id=70:72)
+pollutantmean("~/Downloads/specdata", "sulfate", id=34)
+pollutantmean("~/Downloads/specdata", "nitrate")
+
+
+####
+files <- list.files(path ="~/Downloads/specdata", pattern = ".csv", full.names = TRUE)
+sum(complete.cases(read.csv(files[332])))
+
+##### 2ND function
+
+library(plyr)
+complete <- function(directory, id=1:332) {
+  files <- list.files(path =directory, pattern = ".csv", full.names = TRUE)
+  nobs<-numeric()
+  
+  for (i in id) {
+    
+    data<-read.csv(files[i])
+    nobs<-c(nobs, sum(complete.cases(data)))
+}
+result<-data.frame(id, nobs)
+return(result)
+
 }
 
 
-        
-             
+
+##### Test 2nd function
+complete("~/Downloads/specdata", 1)
+
+complete("~/Downloads/specdata", 3)
+
+complete("~/Downloads/specdata", c(2,4,8,10,12))
+complete("~/Downloads/specdata", id=10:30)
+
+
+
+
+
+print(cc$nobs)
+
+cc<-complete("~/Downloads/specdata", 54)
+
+
+##### 3rd function
+dt<-dir("~/Downloads/specdata", full.names = T) %>% map_df(read.csv)
+attach(dt)
+
+correlation <- function(correlation, thereshold=0) {
+  files <- list.files(path =directory, pattern = ".csv", full.names = TRUE)
+ nobs<-numeric()
+  
+if(nobs>threshold) {
+  for (i in id) {
+    
+  }
+  
+    data<-read.csv(files[i])
+    nobs<-c(nobs, sum(complete.cases(data)))
+
+    }
+    
+  }
+  
+  return(cor_vector)
+  
+}
+
+setwd("~/Downloads")
+    
+
+#### Test function
+correlation("specdata", 0)
+
+correlation("~/Downloads/specdata", 5000)
+
+ 
