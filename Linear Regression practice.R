@@ -263,28 +263,154 @@ cc<-complete("~/Downloads/specdata", 54)
 
 
 ##### 3rd function
-dt<-dir("~/Downloads/specdata", full.names = T) %>% map_df(read.csv)
-attach(dt)
+dt<-dir("~/Downloads/specdata", full.names = T) %>% map_df(read.csv, na.rm=T)
 
-correlation <- function(correlation, thereshold=0) {
+
+correlation <- function(directory, threshold = 0) {
+ 
   files <- list.files(path =directory, pattern = ".csv", full.names = TRUE)
- nobs<-numeric()
+   
+   data<-read.csv(files)
+   nobs<-sum(complete.cases(data))
+   data2<-complete.cases(read.csv(files))
+   
+   if (nobs > threshold) {
+     for (i in data2) {
+       cor<-cor(data2[[,2]], data2[[,3]], use = "complete.obs")
+     }
+     return(cor)
+   }
+}
   
-if(nobs>threshold) {
-  for (i in id) {
-    
-  }
-  
-    data<-read.csv(files[i])
-    nobs<-c(nobs, sum(complete.cases(data)))
+######
+####COMPLETE function
 
-    }
+complete <- function(directory, id = 1:332) {
+  # --- Assert 'directory' is a character vector of length 1 indicating the
+  # location of the CSV files.  'id' is an integer vector indicating the
+  # monitor ID numbers to be used Return a data frame of the form: id nobs 1
+  # 117 2 1041 ...  where 'id' is the monitor ID number and 'nobs' is the
+  # number of complete cases
+  
+  # --- Assert create an empty vector
+  nobsNum <- numeric(0)
+  
+  for (cid in id) {
+    # --- Assert get data frame as ID
+    cDfr <- getmonitor(cid, directory)
     
+    # --- Assert count the number of complete cases and append to numeric
+    # vector
+    nobsNum <- c(nobsNum, nrow(na.omit(cDfr)))
   }
+  
+  # --- Assert return value is a data frame with TWO (2) columns
+  data.frame(id = id, nobs = nobsNum)
+}
+
+#####
+
+corr <- function(directory, threshold = 0) {
+  ## 'directory' is a character vector of length 1 indicating
+  ## the location of the CSV files
+  
+  ## 'threshold' is a numeric vector of length 1 indicating the
+  ## number of completely observed observations (on all
+  ## variables) required to compute the correlation between
+  ## nitrate and sulfate; the default is 0
+  
+  ## Return a numeric vector of correlations
+  
+  tcorr <- function(fname) {
+    data <- read.csv(file.path(directory, fname))
+    nobs <- sum(complete.cases(data))
+    if (nobs > threshold) {
+      return (cor(data$nitrate, data$sulfate, use="complete.obs"))
+    }
+  }
+  tcorrs <- sapply(list.files(directory), tcorr) #get all correlations + NULLs
+  tcorrs <- unlist(tcorrs[!sapply(tcorrs, is.null)]) #remove NULLs
+  return (tcorrs)
+}
+
+
+
+
+correlation("specdata")
+    
+cr<-corr("~/Downloads/specdata", threshold = 330)
+cr
+
+rm(list = ls())
+
+
+
+cr<-corr("~/Downloads/specdata", threshold = 330)   
+cr <- sort(cr)
+cr <- rank(cr)
+cr <- order(cr)
+
+
+
+RNGversion("3.5.1")
+set.seed(868)                
+out <- round(cr[sample(length(cr), 5)], 4)
+print(out)
+
+
   
   return(cor_vector)
   
+
+    #####
+corr <- function(directory, threshold = 0) {
+  # --- Assert 'directory' is a character vector of length 1 indicating the
+  # location of the CSV files.  'threshold' is a numeric vector of length 1
+  # indicating the number of completely observed observations (on all
+  # variables) required to compute the correlation between nitrate and
+  # sulfate; the default is 0.  Return a numeric vector of correlations.
+  
+  # --- Assert create an empty numeric vector
+  corrsNum <- numeric(0)
+  
+  # --- Assert get a data frame as ID = 1:332
+  nobsDfr <- complete("specdata")
+  
+  # --- Assert apply threshold
+  nobsDfr <- nobsDfr[nobsDfr$nobs > threshold, ]
+  
+  for (cid in nobsDfr$id) {
+    # --- Assert get a data frame as ID in $id
+    monDfr <- getmonitor(cid, directory)
+    
+    # --- Assert calculate correlation between $sulfate and $nitrate
+    corrsNum <- c(corrsNum, cor(monDfr$sulfate, monDfr$nitrate, use = "pairwise.complete.obs"))
+  }
+  
+  # --- Assert return value is a numeric vector of correlations
+  return(corrsNum)
 }
+
+    
+    
+#####Test 3rd function
+
+cr <- corr("~/Downloads/specdata", 129)                
+cr <- sort(cr)                
+n <- length(cr)    
+RNGversion("3.5.1")
+set.seed(197)                
+out <- c(n, round(cr[sample(n, 5)], 4))
+print(out)
+
+
+
+
+
+
+
+
+
 
 setwd("~/Downloads")
     
@@ -294,4 +420,63 @@ correlation("specdata", 0)
 
 correlation("~/Downloads/specdata", 5000)
 
- 
+
+cr <- corr("~/Downloads/specdata", 2000)                
+n <- length(cr)                
+cr <- corr("~/Downloads/specdata", 1000)                
+cr <- sort(cr)
+print(c(n, round(cr, 4)))
+
+
+RNGversion("3.5.1")  
+set.seed(42)
+cc <- complete("specdata", 332:1)
+use <- sample(332, 10)
+print(cc[use, "nobs"])
+
+######
+dt
+head(dt)
+datbad<-is.na(dt)
+datbad
+dat<-dt[!datbad]
+head(dat)
+dim(dt)
+dim(dat)
+
+
+
+
+
+
+
+
+
+\cor<-cor(dat, dat[[,3]], method = c("pearson"))
+
+
+corr<-function(dat, pollutant1, pollutant2) {
+  dat<-complete.cases(dt)
+  cor<-cor(dat[[,2]], dat[[,3]], method = c("pearson"))
+
+}
+
+#####practice week 3
+x<-c(rnorm(10), runif(10), rnorm(10,1))
+f<-gl(3,10)
+x
+f
+tapply(x, f, mean)
+tapply(x, f, mean)
+
+x<-list(a=1:5, b=rnorm(10))
+x
+lapply(x, range)
+lapply(x,mean)
+
+
+sapply(x, range)
+sapply(x,mean)
+
+X<-array(2,3, dimnames=NULL)
+array()
