@@ -4,7 +4,7 @@ library(ISLR)
 Boston
 names(Boston)
 head(Boston)
-
+New data
 hist(Boston$crim)
 hist(Boston$zn)
 hist(Boston$indus)
