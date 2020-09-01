@@ -20,16 +20,30 @@ x<-extract.data(chas, indus)
 x
 head(x)
 
-Boston
+attach(Boston)
 
 
 
 fit1<-lm(Boston$medv~Boston$lstat, Boston)
+fit1<-lm(medv~lstat, Boston)
 fit1
 summary(fit1)
 plot(Boston$medv~Boston$lstat)
 
-abline(fit1, lwd=3)
+abline(fit1, lwd=1)
+names(fit1)
+
+coef(fit1)
+resid(fit1)
+confint(fit1)
+
+predict(fit1, data.frame(lstat=c(25)), interval = "confidence")
+
+predict(fit1, data.frame(lstat=c(20,21,25)), interval = "confidence")
+
+
+describe(medv)
+
 
 fit2<-lm(Boston$medv~Boston$lstat, Boston$chas, Boston)
 
@@ -69,6 +83,25 @@ plot(lstat, medv, col="red")
 plot(lstat, medv, pch=20)
 plot(lstat, medv, pch="+")
 plot(1:20, 1:20, pch=1:20)
+
+
+> plot(lstat, medv)
+> abline(fit1)
+> abline(fit1, lwd=2)
+> plot(lstat, medv)
+> abline(a=30, b=-0.7)
+> abline(fit1, lwd=2, col="red")
+> abline(fit1, lwd=2, col="red", pch=2)
+> abline(fit1, lwd=2, col="red", pch=20)
+> abline(fit1, lwd=2, col="red", pch="+")
+> plot(lstat, medv)
+> abline(fit1, lwd=2, col="red", pch="+")
+
+
+
+
+
+
 
 ######Make various graphs appear in the same plot screen
 par(mfrow=c(2,2))
