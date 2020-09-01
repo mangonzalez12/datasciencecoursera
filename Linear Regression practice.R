@@ -98,6 +98,17 @@ plot(1:20, 1:20, pch=1:20)
 > abline(fit1, lwd=2, col="red", pch="+")
 
 
+abline(fit1, lwd=1)
+abline(fit1, lwd=3, col="red")
+plot(lstat, medv, col="red")
+plot(lstat, medv, col="red", lwd=3)
+plot(lstat, medv, pch=20)
+plot(lstat, medv, pch="+")
+plot(1:20, 1:20, pch=1:20)
+
+plot(fit1)
+plot(fit1$residuals)
+par(mfrow=c(2,2))
 
 
 
