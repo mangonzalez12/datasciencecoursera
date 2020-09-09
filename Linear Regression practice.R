@@ -5,6 +5,11 @@ Boston
 names(Boston)
 head(Boston)
 New data
+attach(Boston)
+
+hist(crim)
+
+
 hist(Boston$crim)
 hist(Boston$zn)
 hist(Boston$indus)
@@ -66,6 +71,20 @@ fit1$assign
 fit1$qr
 fit1$df.residual
 
+
+########STR function
+Boston
+
+str(Boston)
+
+a<-rnorm(160, 1.35, 1.39)
+homa<-rnorm(160, 3.6, 2.2)
+hist(a)
+fit<-lm(a~homa)
+fit
+
+plot(a,homa)
+abline(fit) 
 
 ####Prediction, remember that prediction treats the function as a black box
 
@@ -487,6 +506,8 @@ dat<-dt[!datbad]
 head(dat)
 dim(dt)
 dim(dat)
+
+
 
 
 
